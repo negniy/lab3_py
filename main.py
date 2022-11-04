@@ -3,17 +3,26 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 
 import sys
 
+class Window(QMainWindow):
+    def __init__(self):
+        super(Window, self). __init__()
+        
+        self.setWindowTitle("Программа о розах и тюльпанах")
+        self.setGeometry(150, 150, 700, 700)
+          
+        self.btn=QtWidgets.QPushButton(self)
+        self.btn.move(50, 50)
+        self.btn.setText("путь к папке исходного датасета")
+        self.btn.setFixedWidth(600)
+        self.btn.clicked.connect(self.create_annotation)
+    
+
+    def create_annotation(self):
+        print(1)
+
 def applicaion():
     app = QApplication(sys.argv)
-    window = QMainWindow()
-    window.setWindowTitle("Программа о розах и тюльпанах")
-    window.setGeometry(150, 150, 700, 700)
-    
-    btn=QtWidgets.QPushButton(window)
-    btn.move(50, 50)
-    btn.setText("1")
-    btn.setFixedWidth(600)
-    
+    window = Window()
     
     window.show()
     sys.exit(app.exec_())
