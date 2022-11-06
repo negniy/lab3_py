@@ -5,7 +5,7 @@ import shutil
 from typing import List
 
 
-def copy_to_another(path: str, class_names: List[str]) -> None:
+def copy_to_another(path: str, class_names: List[str], folderpath) -> None:
     """
     Функция копирует элелемент класса в другую директорию и записывает в аннотацию абсолютный, относительный пути
     и класс, к которому принадлежит копируемый элемент
@@ -19,12 +19,12 @@ def copy_to_another(path: str, class_names: List[str]) -> None:
             ["Абсолютный путь", "Относительный путь", "Класс"])
         for class_name in class_names:
             for i in range(1050):
-                if (os.path.isfile(get_path.get_absolute_way(class_name, i, "download")) == True):
+                if (os.path.isfile(get_path.get_absolute_way(class_name, i, "download", folderpath)) == True):
                     shutil.copyfile(get_path.get_absolute_way(
-                        class_name, i, "download"), get_path.get_absolute_way(class_name, i, "changed"))
+                        class_name, i, "download", folderpath), get_path.get_absolute_way(class_name, i, "changed", folderpath))
 
                 file_writer.writerow([get_path.get_absolute_way(
-                    class_name, i, "download"), get_path.changed_relative_way(class_name, i), class_name])
+                    class_name, i, "download", folderpath), get_path.changed_relative_way(class_name, i, folderpath), class_name])
 
 
 def main():

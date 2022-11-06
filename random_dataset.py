@@ -6,7 +6,7 @@ import random
 from typing import List
 
 
-def random_copy(path: str, class_names: List[str]) -> None:
+def random_copy(path: str, class_names: List[str], folderpath) -> None:
     """
     Копирует элементы класса в другую директорию с рандомными именами от 0 до 10000(вне зависимости от класса изображения),
     и записывает в файл аннотацию абсолютный, относительный пути изображений, и класс к которому они относились
@@ -21,21 +21,21 @@ def random_copy(path: str, class_names: List[str]) -> None:
         for class_name in class_names:
             for i in range(1050):
                 rand_number = random.randint(0, 10000)
-                if (os.path.isfile(get_path.get_absolute_way(class_name, i, "download")) == True):
-                    while (os.path.isfile(get_path.get_absolute_way(class_name, rand_number, "random")) == True):
+                if (os.path.isfile(get_path.get_absolute_way(class_name, i, "download", folderpath)) == True):
+                    while (os.path.isfile(get_path.get_absolute_way(class_name, rand_number, "random", folderpath)) == True):
                         rand_number = random.randint(0, 10000)
+                        
                     shutil.copyfile(get_path.get_absolute_way(
-                        class_name, i, "download"), get_path.get_absolute_way(class_name, rand_number, "random"))
+                        class_name, i, "download", folderpath), get_path.get_absolute_way(class_name, rand_number, "random", folderpath))
                     file_writer.writerow([get_path.get_absolute_way(
-                        class_name, i, "download"), get_path.random_relative_way(rand_number), class_name])
-    
+                        class_name, i, "download", folderpath), get_path.random_relative_way(rand_number, folderpath), class_name])
 
 
 def main():
     print("Start")
     if not os.path.isdir("dataset/random_dataset"):
         os.mkdir("dataset/random_dataset")
-    
+
     random_copy("random_annotation.csv", ["rose", "tulip"])
     print("The end")
 
