@@ -1,6 +1,9 @@
-
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from create_annotation import create_annotation as make_ann
+from changed_dataset import copy_to_another as to_another
+from random_dataset import random_copy as random
+import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -86,14 +89,17 @@ class Ui_MainWindow(object):
         self.pushButton_3.setObjectName("pushButton_3")
         self.verticalLayout.addWidget(self.pushButton_3)
         MainWindow.setCentralWidget(self.centralwidget)
-
+        self.folderpath = QtWidgets.QFileDialog.getExistingDirectory(MainWindow, "Выберите папку с датасетом")
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
+        
+        
         self.add_functions()
 
     def retranslateUi(self, MainWindow):
+        
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Моя программа"))
         self.label.setText(_translate("MainWindow", "Программа по работе с изображениями"))
@@ -108,18 +114,26 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Перезаписать со случайными номерами"))
         
     def add_functions(self):
-        self.pushButton_5.clicked.connect(self.next_rose())
-        self.pushButton_6.clicked.connect(self.next_tulip())
-        self.pushButton.clicked.connect(self.create_annotation())
-        self.pushButton_2.clicked.connect(self.copy_to_another())
-        self.pushButton_3.clicked.connect(self.random_copy())
+        #self.pushButton_5.clicked.connect(lambda: self.next_rose())
+        #self.pushButton_6.clicked.connect(lambda: self.next_tulip())
+        self.pushButton.clicked.connect(lambda: self.create_annotation()) #чтобы метод не только передавался но и выполнялся
+        self.pushButton_2.clicked.connect(lambda: self.copy_to_another())
+        self.pushButton_3.clicked.connect(lambda: self.random_copy())
+        
+    def create_annotation(self):
+        make_ann("annotation.csv", ["rose", "tulip"], self.folderpath)
+        
+    def copy_to_another(self):
+        to_another("changed_annotation.csv", ["rose", "tulip"], self.folderpath)
+    
+    def random_copy(self):
+        random("random_annotation.csv", ["rose", "tulip"], self.folderpath)
         
         
         
 
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
