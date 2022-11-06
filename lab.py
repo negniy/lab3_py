@@ -108,8 +108,13 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Перезаписать со случайными номерами"))
         
     def add_functions(self):
-        self.pushButton_5.clicked.connect(self.next_rose)
-        self.pushButton_6.clicked.connect(self.next_tulip)
+        self.pushButton_5.clicked.connect(self.next_rose())
+        self.pushButton_6.clicked.connect(self.next_tulip())
+        self.pushButton.clicked.connect(self.create_annotation())
+        self.pushButton_2.clicked.connect(self.copy_to_another())
+        self.pushButton_3.clicked.connect(self.random_copy())
+        
+        
         
 
 
