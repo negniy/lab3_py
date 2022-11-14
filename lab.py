@@ -3,7 +3,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from create_annotation import create_annotation as make_ann
 from changed_dataset import copy_to_another as to_another
 from random_dataset import random_copy as random
-import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
