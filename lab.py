@@ -1,5 +1,8 @@
 import sys
+import os
+from iterator import Iterator
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPixmap
 from create_annotation import create_annotation as make_ann
 from changed_dataset import copy_to_another as to_another
 from random_dataset import random_copy as random
@@ -95,6 +98,9 @@ class Ui_MainWindow(object):
         
         
         
+        
+        self.rose_iterator = Iterator('annotation.csv', 'rose')
+        self.tulip_iterator = Iterator('annotation.csv', 'tulip')
         self.add_functions()
 
     def retranslateUi(self, MainWindow):
@@ -113,8 +119,8 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Перезаписать со случайными номерами"))
         
     def add_functions(self):
-        #self.pushButton_5.clicked.connect(lambda: self.next_rose())
-        #self.pushButton_6.clicked.connect(lambda: self.next_tulip())
+        self.pushButton_5.clicked.connect(lambda: self.next_rose())
+        self.pushButton_6.clicked.connect(lambda: self.next_tulip())
         self.pushButton.clicked.connect(lambda: self.create_annotation()) #чтобы метод не только передавался но и выполнялся
         self.pushButton_2.clicked.connect(lambda: self.copy_to_another())
         self.pushButton_3.clicked.connect(lambda: self.random_copy())
@@ -128,9 +134,33 @@ class Ui_MainWindow(object):
     def random_copy(self):
         random("random_annotation.csv", ["rose", "tulip"], self.folderpath)
         
-        
-        
+    def next_rose(self):
+        self.image_way_rose = next(self.rose_iterator)
+        while self.image_way_rose == None:
+            self.image_way_rose = next(self.rose_iterator)
+        if os.path.isfile(str(self.image_way_rose)):
+            image = QPixmap(self.image_way_rose)
+            self.label_2.clear()
+            self.label_2.setPixmap(image)
+            self.label_2.adjustSize()
+            self.label_2.move(0, 0)
+            self.label_2.show()
+        else:
+            print('image dont find')
 
+    def next_tulip(self):
+        self.image_way_tulip = next(self.tulip_iterator)
+        while self.image_way_tulip == None:
+            self.image_way_tulip = next(self.tulip_iterator)
+        if os.path.isfile(str(self.image_way_tulip)):
+            image = QPixmap(self.image_way_tulip)
+            self.label_3.clear()
+            self.label_3.setPixmap(image)
+            self.label_3.adjustSize()
+            self.label_3.move(0, 0)
+            self.label_3.show()
+        else:
+            print('image dont find')
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
