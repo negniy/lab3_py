@@ -98,9 +98,9 @@ class Ui_MainWindow(object):
         
         
         
-        
-        self.rose_iterator = Iterator('annotation.csv', 'rose')
-        self.tulip_iterator = Iterator('annotation.csv', 'tulip')
+        make_ann("temp_annotation.csv", ["rose", "tulip"], self.folderpath)
+        self.rose_iterator = Iterator('temp_annotation.csv', 'rose')
+        self.tulip_iterator = Iterator('temp_annotation.csv', 'tulip')
         self.add_functions()
 
     def retranslateUi(self, MainWindow):
@@ -168,4 +168,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    os.remove("temp_annotation.csv")
     sys.exit(app.exec_())
+    
