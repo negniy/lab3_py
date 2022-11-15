@@ -8,10 +8,11 @@ class Iterator:
         self.file_name = file_name
         self.class_name = class_name
         self.rows = []
-        with open(file_name, encoding='utf-8') as r_file:
-            reader = csv.reader(r_file, delimiter = ";")
+        with open(file_name, encoding='utf-8') as file:
+            reader = csv.reader(file, delimiter = ";")
             for row in reader:
                 if row[2] == class_name:
+                    
                     self.rows.append(row[0])
                     self.limit += 1
 
