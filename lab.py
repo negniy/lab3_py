@@ -96,8 +96,6 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         
-        
-        
         make_ann("temp_annotation.csv", ["rose", "tulip"], self.folderpath)
         self.rose_iterator = Iterator('temp_annotation.csv', 'rose')
         self.tulip_iterator = Iterator('temp_annotation.csv', 'tulip')
