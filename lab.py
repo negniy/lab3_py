@@ -1,14 +1,22 @@
-import sys
 import os
-from iterator import Iterator
+import sys
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap
-from create_annotation import create_annotation as make_ann
+
 from changed_dataset import copy_to_another as to_another
+from create_annotation import create_annotation as make_ann
+from iterator import Iterator
 from random_dataset import random_copy as random
 
+
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow)-> None:
+        """ 
+        конструктор 
+        Args:
+            MainWindow (_type_): родительский класс для окна
+        """
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(450, 550)
         MainWindow.setStyleSheet("\n"
@@ -101,8 +109,12 @@ class Ui_MainWindow(object):
         self.tulip_iterator = Iterator('temp_annotation.csv', 'tulip')
         self.add_functions()
 
-    def retranslateUi(self, MainWindow):
-        
+    def retranslateUi(self, MainWindow)-> None:
+        """
+        показывает то что будет выводиться на экран
+        Args:
+            MainWindow (_type_): родительский класс для окна
+        """
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Моя программа"))
         self.label.setText(_translate("MainWindow", "Программа по работе с изображениями"))
@@ -116,23 +128,35 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Перенести в другую директорию"))
         self.pushButton_3.setText(_translate("MainWindow", "Перезаписать со случайными номерами"))
         
-    def add_functions(self):
+    def add_functions(self)-> None:
+        """обработчик событий
+        """
         self.pushButton_5.clicked.connect(lambda: self.next_rose())
         self.pushButton_6.clicked.connect(lambda: self.next_tulip())
         self.pushButton.clicked.connect(lambda: self.create_annotation()) #чтобы метод не только передавался но и выполнялся
         self.pushButton_2.clicked.connect(lambda: self.copy_to_another())
         self.pushButton_3.clicked.connect(lambda: self.random_copy())
         
-    def create_annotation(self):
+    def create_annotation(self)-> None:
+        """функция создания аннотации
+        """
         make_ann("annotation.csv", ["rose", "tulip"], self.folderpath)
         
-    def copy_to_another(self):
+    def copy_to_another(self)-> None:
+        """копирует датасет в другую директорию и создает аннотацию
+        """
         to_another("changed_annotation.csv", ["rose", "tulip"], self.folderpath)
+        print("ready")
     
-    def random_copy(self):
+    def random_copy(self)-> None:
+        """копирует с рандомными номерами и создает аннотацию
+        """
         random("random_annotation.csv", ["rose", "tulip"], self.folderpath)
+        print("ready")
         
-    def next_rose(self):
+    def next_rose(self)-> None:
+        """помещает в лейбл2 изображение розы
+        """
         self.image_way_rose = next(self.rose_iterator)
         while self.image_way_rose == None:
             self.image_way_rose = next(self.rose_iterator)
@@ -146,7 +170,9 @@ class Ui_MainWindow(object):
         else:
             print('image dont find')
 
-    def next_tulip(self):
+    def next_tulip(self) -> None:
+        """помещает в лейбл3 изображение тюльпана
+        """
         self.image_way_tulip = next(self.tulip_iterator)
         while self.image_way_tulip == None:
             self.image_way_tulip = next(self.tulip_iterator)

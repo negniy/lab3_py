@@ -13,12 +13,14 @@ def copy_to_another(path: str, class_names: List[str], folderpath) -> None:
         file_writer (any): объект открытого файла аннотации
         class_names list(str): классы, к которому относится элемент
     """
+    if not os.path.isdir("dataset/changed_dataset"):
+        os.mkdir("dataset/changed_dataset")
     with open(path, mode="w", encoding='utf-8') as w_file:
         file_writer = csv.writer(w_file, delimiter=";", lineterminator="\r")
         file_writer.writerow(
             ["Абсолютный путь", "Относительный путь", "Класс"])
         for class_name in class_names:
-            for i in range(1050):
+            for i in range(1, 1050):
                 if (os.path.isfile(get_path.get_absolute_way(class_name, i, "download", folderpath)) == True):
                     shutil.copyfile(get_path.get_absolute_way(
                         class_name, i, "download", folderpath), get_path.get_absolute_way(class_name, i, "changed", folderpath))
