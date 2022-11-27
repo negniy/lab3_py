@@ -49,9 +49,18 @@ def create_dataframe():
         except:
             pass
         
+    dataframe['hight'] = pd.Series(hight)    
     dataframe['width'] = pd.Series(width)
-    dataframe['hight'] = pd.Series(hight)
     dataframe['depth'] = pd.Series(depth)
+    
+    print("\n Images hight statistic: \n")
+    print(dataframe['hight']. describe ())
+    
+    print("\n Images width statistic: \n")
+    print(dataframe['width']. describe ())
+    
+    print("\n Images depth statistic: \n")
+    print(dataframe['depth']. describe ())
     
     print(dataframe.columns)
     print(dataframe)
