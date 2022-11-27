@@ -1,6 +1,7 @@
 import csv
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 import random
 import pandas as pd
 
@@ -28,15 +29,29 @@ def create_dataframe():
         }
     )
     
-    print(dataframe.columns)
-    print(dataframe)
-    
     dataframe = dataframe.rename(
         columns={class_name[0]: 'class_name',
                  absolute_way[0]: 'absolute_way'}
         )
     
     dataframe['class_mark'] = pd.array(class_mark[1:])
+    
+    hight = []
+    width =[]
+    depth = []
+    
+    for path in absolute_way:
+        try:
+            image = image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
+            hight.append(image.shape[0])
+            width.append(image.shape[1])
+            depth.append(image.shape[2])
+        except:
+            pass
+        
+    dataframe['width'] = pd.Series(width)
+    dataframe['hight'] = pd.Series(hight)
+    dataframe['depth'] = pd.Series(depth)
     
     print(dataframe.columns)
     print(dataframe)
