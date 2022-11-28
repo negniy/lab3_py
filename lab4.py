@@ -5,8 +5,13 @@ import numpy as np
 import random
 import pandas as pd
 
-def filter(dataframe, class_mark):
+def class_filter(dataframe, class_mark):
     res = pd.DataFrame(dataframe[dataframe.class_mark == class_mark])
+    return res
+
+
+def size_filter(dataframe, class_mark,  max_hight, max_width):
+    res = pd.DataFrame(dataframe[dataframe.class_mark == class_mark][dataframe.hight <= max_hight][dataframe.width <= max_width])
     return res
 
 
@@ -69,7 +74,11 @@ def create():
     print(dataframe.columns)
     print(dataframe)
     
-    print(filter(dataframe, 0))
+    print("\n Filtrated dataframe(class): \n")
+    print(class_filter(dataframe, 0))
+    
+    print("\n Filtrated dataframe(size and class): \n")
+    print(size_filter(dataframe, 1, 400, 400))
 
 def main():
     print('start')
