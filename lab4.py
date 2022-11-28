@@ -5,8 +5,12 @@ import numpy as np
 import random
 import pandas as pd
 
+def filter(dataframe, class_mark):
+    res = pd.DataFrame(dataframe[dataframe.class_mark == class_mark])
+    return res
 
-def create_dataframe():
+
+def create():
     filename = 'annotation.csv'
     class_mark = []
     class_name =[]
@@ -64,12 +68,14 @@ def create_dataframe():
     
     print(dataframe.columns)
     print(dataframe)
+    
+    print(filter(dataframe, 0))
 
 def main():
-    print('program start')
+    print('start')
     pd.set_option('display.max_colwidth', None)
-    create_dataframe()
-    print('program finish')
+    create()
+    print('finish')
     
     
 if __name__ == '__main__':
