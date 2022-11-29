@@ -13,6 +13,35 @@ def class_filter(dataframe, class_mark):
 def size_filter(dataframe, class_mark,  max_hight, max_width):
     res = pd.DataFrame(dataframe[dataframe.class_mark == class_mark][dataframe.hight <= max_hight][dataframe.width <= max_width])
     return res
+
+
+def create_histogram(dataframe, class_mark):
+    if(class_mark==0):
+        class_name="rose"
+    else:
+        class_name="tilip"
+        
+    rand_index = random.randint(0, 1020)
+    filtrated_dataframe = class_filter(dataframe, class_mark)
+    "data['name'].loc[data.index[1]]"
+    path_to_image = filtrated_dataframe["absolute_way"].loc[filtrated_dataframe.index[rand_index]]
+    image = cv2.imdecode(np.fromfile(path_to_image, dtype=np.uint8), cv2.IMREAD_COLOR)
+    cv2.imshow(f"Изображение {class_name}:{path_to_image}", image)
+    cv2.waitKey(0)
+    full_histr={}
+    colors = ("b","g","r")
+    for i in range(3):
+        histr = cv2.calcHist([image], [i], None, [256], [0,256])
+        full_histr[f"{colors[i]}"] = histr
+    return full_histr
+
+
+def draw_histogram(full_histr):
+    for col, histr in full_histr:
+        plt.plot(histr, color=col)
+        plt.xlim([0,256])
+    plt.show()
+    
   
 
 def create():
@@ -51,7 +80,7 @@ def create():
     
     for path in absolute_way:
         try:
-            image = image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
+            image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
             hight.append(image.shape[0])
             width.append(image.shape[1])
             depth.append(image.shape[2])
@@ -82,7 +111,7 @@ def create():
     
     for path in absolute_way:
         try:
-            image = image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
+            image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
             number_of_pixels.append(image.size)
         except:
             pass
@@ -104,7 +133,7 @@ def create():
     print(dataframe)
     
     
-    
+    draw_histogram(create_histogram(dataframe, 0))
     
     
     
