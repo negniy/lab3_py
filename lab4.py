@@ -37,8 +37,12 @@ def create_histogram(dataframe, class_mark):
 
 
 def draw_histogram(full_histr):
-    for col, histr in full_histr:
-        plt.plot(histr, color=col)
+    plt.xlabel('Интенсивность')
+    plt.ylabel('Количество пикселей')
+    plt.title('Гистограмма количества пикселей для каждого рассматриваемого значения интенсивности')
+    plt.legend(['blue','green','red']) 
+    for item in full_histr.items():
+        plt.plot(item[1], color=item[0])
         plt.xlim([0,256])
     plt.show()
     
