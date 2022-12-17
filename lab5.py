@@ -1,81 +1,87 @@
-import os
-import glob
-from PIL import Image
-from typing import Tuple, Any
-import numpy as np
+from typing import Any, Tuple
 import cv2
-import csv
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import torch
+import torch.nn as nn
+import torch.optim as optim
 import torchvision
-from torch.utils.data import Dataset
-import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader, Dataset
 
 
 class CustomImageDataset(Dataset):
-    
-    def __init__(self, file_list, transform: Any = None, target_transform: Any = None) -> None:
-        self.file_list = file_list
-        self.transform = transform
-        self.target_transform = target_transform
-        
+  def __init__(self, path_to_annotation_file: str, transform: Any=None, target_transform: Any=None) -> None:
+    self.path_to_annotation_file = path_to_annotation_file
+    self.dataset_info = pd.read_csv(path_to_annotation_file, sep=';', header=1)
+    self.transform = transform
+    self.target_transform = target_transform
 
-    def __len__(self) -> int:
-        self.filelength = len(self.file_list)
-        return self.filelength
-    
-    #load an one of images
-    def __getitem__(self, index: int) -> Tuple[torch.tensor, int]:
-        path_to_image = self.file_list[index]
-        image = Image.open(path_to_image)
-        print(path_to_image)
-    
-        if 'rose' in path_to_image:
-            label = 1
-        elif 'tulip' in path_to_image:
-            label = 0
-        
-        print(label)
-        
-        return image, label
-         
-            
-        
-    
+  def __len__(self) -> int:
+    return len(self.dataset_info)
+
+  def __getitem__(self, index: int) -> Tuple[torch.tensor, int]:
+    path_to_image = self.dataset_info.iloc[index, 0]
+    image = cv2.cvtColor(cv2.imread(path_to_image), cv2.COLOR_BGR2RGB)
+    label = self.dataset_info.iloc[index, 2]
+
+    if self.transform:
+      image = self.transform(image)
+    if self.target_transform:
+      label = self.target_Transform(label)
+      
+    return image, label
+
+class CNN(nn.Module):
+    def __init__(self) -> None:
+        super(CNN, self).__init__()
+
+        self.conv_1 = nn.Conv2d(3, 16, kernel_size=3, padding=0, stride=2)
+        self.conv_2 = nn.Conv2d(16, 32, kernel_size=3, padding=0, stride=2)
+        self.conv_3 = nn.Conv2d(32, 64, kernel_size=3, padding=0, stride=2)
+
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(0.1)
+        self.max_pool = nn.MaxPool2d(2)
+
+        # 43264 - пока что определяем экспериментальным путем (:
+        self.fc_1 = nn.Linear(576, 10)
+        self.fc_2 = nn.Linear(10, 1)
+
+    def forward(self, x: torch.tensor) -> torch.tensor:
+        output = self.relu(self.conv_1(x))
+        output = self.max_pool(output)
+        output = self.relu(self.conv_2(output))
+        output = self.max_pool(output)
+        output = self.relu(self.conv_3(output))
+        output = self.max_pool(output)
+
+        # print(torch.nn.Flatten()(output).shape) - определить можно, распечатав вот это
+
+        output = torch.nn.Flatten()(output)
+        output = self.relu(self.fc_1(output))
+        output = torch.nn.Sigmoid()(self.fc_2(output))
+        return output
+
 
 def main():
-    print('laba 5 started')
-    
-    images_list = []
-    images_list = glob.glob(os.path.join('dataset/changed_dataset','*.jpg'))
-    
-    train_dataset = images_list[0 : int(len(images_list)*0.8)]
-    test_dataset = images_list[int(len(images_list)*0.8) : int(len(images_list)*0.9)]
-    val_dataset = images_list[int(len(images_list)*0.9) : int(len(images_list))]
-    
-    print(images_list)
-    
-    print(train_dataset)
-    print(test_dataset)
-    print(val_dataset)
-    
-    random_idx = np.random.randint(1,len(images_list),size=10)
 
-    fig = plt.figure()
-    i=1
-    for idx in random_idx:
-        fig.add_subplot(2,5,i)
-        img = Image.open(images_list[idx])
-        plt.imshow(img)
-        i+=1
-    
-    plt.show()
-    plt.axis('off')
-    
-    
-    
-    
-    print('laba 5 ended')
+    device = torch.device(
+        "cuda:0") if torch.cuda.is_available() else torch.device("cpu")
+    model = CNN().to(device)
 
-if __name__ == '__main__':
+    custom_transforms = torchvision.transforms.Compose([torchvision.transforms.ToTensor(),
+                                                        torchvision.transforms.Resize(
+                                                            (224, 224)),
+                                                        torchvision.transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+
+
+
+
+    train_dataset = CustomImageDataset(
+        'annotation.csv', custom_transforms)
+    
+    print('end')
+
+if __name__ == "__main__":
     main()
