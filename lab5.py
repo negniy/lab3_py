@@ -23,7 +23,7 @@ class CustomImageDataset(Dataset):
   def __getitem__(self, index: int) -> Tuple[torch.tensor, int]:
     path_to_image = self.dataset_info.iloc[index, 0]
     image = cv2.cvtColor(cv2.imread(path_to_image), cv2.COLOR_BGR2RGB)
-    label = self.dataset_info.iloc[index, 2]
+    label = self.dataset_info.iloc[index, 1]
 
     if self.transform:
       image = self.transform(image)
@@ -31,6 +31,8 @@ class CustomImageDataset(Dataset):
       label = self.target_Transform(label)
       
     return image, label
+  
+
 
 class CNN(nn.Module):
     def __init__(self) -> None:
